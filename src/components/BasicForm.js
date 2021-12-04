@@ -1,5 +1,9 @@
 import useInput from '../hooks/use-input'
 
+const isNotEmpty = (value) => value.trim() !== ''
+let pattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/
+const isEmail = (value) => value.trim().match(pattern)
+
 const BasicForm = (props) => {
   const {
     value: enteredFName,
@@ -8,7 +12,7 @@ const BasicForm = (props) => {
     valueChangeHandler: fnameChangeHandler,
     inputBlurHandler: fnameBlurHandler,
     reset: resetFNameInput,
-  } = useInput((value) => value.trim() !== '')
+  } = useInput(isNotEmpty)
 
   const {
     value: enteredLName,
@@ -17,9 +21,8 @@ const BasicForm = (props) => {
     valueChangeHandler: lnameChangeHandler,
     inputBlurHandler: lnameBlurHandler,
     reset: resetLNameInput,
-  } = useInput((value) => value.trim() !== '')
-
-  let pattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/
+  } = useInput(isNotEmpty)
+  
   const {
     value: enteredEmail,
     isValid: enteredEmailIsValid,
@@ -27,7 +30,7 @@ const BasicForm = (props) => {
     valueChangeHandler: emailChangeHandler,
     inputBlurHandler: emailBlurHandler,
     reset: resetEmailInput,
-  } = useInput((value) => value.trim().match(pattern))
+  } = useInput(isEmail)
 
   let formIsValid = false
   if (enteredFNameIsValid && enteredLNameIsValid && enteredEmailIsValid) {
@@ -37,7 +40,7 @@ const BasicForm = (props) => {
   const formSubmitHandler = (e) => {
     e.preventDefault()
 
-    if (!enteredFNameIsValid || !enteredLNameIsValid || !enteredEmailIsValid) {
+    if (!formIsValid) {
       return
     }
     resetFNameInput()
@@ -46,7 +49,7 @@ const BasicForm = (props) => {
   }
 
   const fnameClasses = fnameHasError ? 'form-control invalid' : 'form-control'
-  const lnameClasses = fnameHasError ? 'form-control invalid' : 'form-control'
+  const lnameClasses = lnameHasError ? 'form-control invalid' : 'form-control'
   const emailClasses = emailHasError ? 'form-control invalid' : 'form-control'
 
   return (
